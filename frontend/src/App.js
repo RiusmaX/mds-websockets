@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
-import './App.css';
+import './App.scss'
 import socketClient from 'socket.io-client'
-import MessageList from './components/MessageList';
-import MessageInput from './components/MessageInput';
+import Chat from './components/chat/Chat'
 // Socket ENDPOINT (notre API)
 const SOCKET_ENDPOINT = 'http://localhost:4000'
 
-function App() {
+function App () {
   // On créé un état pour stocker et afficher les réponses en provenance de notre API
   const [response, setResponse] = useState('')
 
@@ -16,26 +15,14 @@ function App() {
     const socket = socketClient(SOCKET_ENDPOINT)
 
     // Ecoute des évènements sur le socket
-    socket.on('toto', (data) => {
-      setResponse(new Date(data).toLocaleString())
+    socket.on('connected', () => {
+      console.log('Connected to server')
     })
-
-    const interval = setInterval(() => {
-      socket.emit('tata', 'COUCOU')
-    }, 1000)
-
-    return () => {
-      clearInterval(interval)
-    }
   }, [])
 
   return (
-    <div>
-      <p>Réponse socket : {response}</p>
-      <MessageList />
-      <MessageInput />
-    </div>
-  );
+    <Chat />
+  )
 }
 
-export default App;
+export default App

@@ -27,18 +27,10 @@ app.get('/', (req, res) => {
   res.send('Hello world !')
 })
 
-let interval
-
 io.on('connection', (socket) => {
   console.log(`client connected on socket ${socket.id}`)
   // Connection avec le client active
-  if (interval) {
-    clearInterval(interval)
-  }
-  interval = setInterval(() => {
-    const date = new Date()
-    socket.emit('toto', date)
-  }, 1000)
+  socket.emit('connected', null)
 
   socket.on('tata', (data) => {
     console.log(`message reçu : ${data}`)
