@@ -1,8 +1,13 @@
 import Channel from './Channel'
 
-function ChannelList ({ channels }) {
+function ChannelList ({ channels, onSelectChannel }) {
   let list = 'There is no channels to show'
-  if (channels) {
+
+  const handleClick = (id) => {
+    onSelectChannel(id)
+  }
+
+  if (channels && channels.length > 0) {
     list = channels.map(c => {
       return (
         <Channel
@@ -10,6 +15,7 @@ function ChannelList ({ channels }) {
           id={c.id}
           name={c.name}
           participants={c.participants}
+          onClick={handleClick}
         />
       )
     })
