@@ -4,14 +4,14 @@ import { loadChannels } from '../../services/Api'
 import ChannelList from './ChannelList'
 import './chat.scss'
 import MessagesPanel from './MessagesPanel'
-
 // Socket ENDPOINT (notre API)
 const SOCKET_ENDPOINT = 'http://localhost:4000'
+const socket = socketClient(SOCKET_ENDPOINT)
 
 function Chat () {
-  const [channels, setChannels] = useState([])
+  const [channels, setChannels] = useState()
+  const [channel, setChannel] = useState()
   // Socket client
-  const socket = socketClient(SOCKET_ENDPOINT)
 
   useEffect(() => {
     const getData = async () => {
@@ -19,17 +19,35 @@ function Chat () {
       setChannels(_channels)
     }
     getData()
+    configureSocket()
+  }, [channel])
 
+  const configureSocket = () => {
     // Ecoute des évènements sur le socket
     socket.on('connected', () => {
       console.log('Connected to server')
+      if (channel) {
+        handleChannelSelect(channel.id)
+      }
     })
-  }, [])
+
+    socket.on('channel', channel => {
+      const _channels = channels
+      if (_channels && _channels.length > 0) {
+        _channels.forEach(c => {
+          if (c.id === channel.id) {
+            c.participants = channel.participants
+          }
+        })
+        setChannels(_channels)
+      }
+    })
+  }
 
   const handleChannelSelect = (id) => {
-    socket.emit('channel-join', id, ack => {
-      console.log(ack)
-    })
+    const channel = channels.find(c => c.id === id)
+    setChannel(channel)
+    socket.emit('channel-join', id)
   }
 
   return (

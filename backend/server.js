@@ -78,6 +78,14 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     console.log('client disconnected')
+    STATIC_CHANNELS.forEach(c => {
+      const index = c.sockets.indexOf(socket.id)
+      if (index !== -1) {
+        c.sockets.splice(index, 1)
+        c.participants--
+        io.emit('channel', c)
+      }
+    })
   })
 })
 
