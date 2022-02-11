@@ -1,6 +1,16 @@
+import { useState } from 'react'
 import Message from './Message'
 
-function MessagesPanel ({ channel }) {
+function MessagesPanel ({ channel, onSendMessage }) {
+  const [text, setText] = useState('')
+
+  const send = () => {
+    if (text && text !== '') {
+      onSendMessage(channel.id, text)
+      setText('')
+    }
+  }
+
   let list = (
     <div className='no-content-message'>
       There is no messages to show
@@ -22,8 +32,8 @@ function MessagesPanel ({ channel }) {
     <div className='messages-panel'>
       <div className='messages-list'>{list}</div>
       <div className='messages-input'>
-        <input type='text' />
-        <button>Send</button>
+        <input type='text' onChange={(e) => setText(e.target.value)} value={text} />
+        <button onClick={send}>Send</button>
       </div>
     </div>
   )

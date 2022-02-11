@@ -29,6 +29,9 @@ function Chat () {
       if (channel) {
         handleChannelSelect(channel.id)
       }
+      // else {
+      //   handleChannelSelect(channels[0].id)
+      // }
     })
 
     socket.on('channel', channel => {
@@ -42,6 +45,22 @@ function Chat () {
         setChannels(_channels)
       }
     })
+
+    socket.on('message', message => {
+      const _channels = channels
+      if (_channels && _channels.length > 0) {
+        _channels.forEach(c => {
+          if (c.id === message.channelId) {
+            if (!c.messages) {
+              c.messages = [message]
+            } else {
+              c.messages.push(message)
+            }
+          }
+        })
+        setChannels(_channels)
+      }
+    })
   }
 
   const handleChannelSelect = (id) => {
@@ -50,10 +69,19 @@ function Chat () {
     socket.emit('channel-join', id)
   }
 
+  const handleSendMessage = (channelId, text) => {
+    socket.emit('send-message', {
+      channelId,
+      text,
+      senderName: socket.id,
+      id: Date.now()
+    })
+  }
+
   return (
     <div className='chat-app'>
       <ChannelList channels={channels} onSelectChannel={handleChannelSelect} />
-      <MessagesPanel />
+      <MessagesPanel onSendMessage={handleSendMessage} channel={channel} />
     </div>
   )
 }

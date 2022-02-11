@@ -76,6 +76,10 @@ io.on('connection', (socket) => {
     return id
   })
 
+  socket.on('send-message', message => {
+    io.emit('message', message)
+  })
+
   socket.on('disconnect', () => {
     console.log('client disconnected')
     STATIC_CHANNELS.forEach(c => {
