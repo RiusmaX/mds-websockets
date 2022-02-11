@@ -1,0 +1,26 @@
+{
+  "name": "back",
+  "version": "1.0.0",
+  "description": "Backend Websocket",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [
+    "backend",
+    "websocket"
+  ],
+  "author": "marius @ sergent.dev",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "socket.io": "^4.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15",
+    "standard": "^16.0.4"
+  }
+}
